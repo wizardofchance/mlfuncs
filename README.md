@@ -1,6 +1,10 @@
 # mlfuncs
 Functions for machine learning classification on numerical tabular data.
 
+example google colab notebook:
+https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing
+
+
 ![image](https://user-images.githubusercontent.com/26733046/180589049-a10c7f7d-53da-4709-ab3f-3ba5be19f5fd.png)
 
 
