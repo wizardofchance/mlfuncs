@@ -1,5 +1,6 @@
 # mlfuncs
 Functions for machine learning classification on numerical tabular data.
+Uses scilit learn
 
 example google colab notebook:
 https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing
@@ -24,8 +25,17 @@ https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sh
 
 ![image](https://user-images.githubusercontent.com/26733046/180588958-b4713105-7441-4e32-827f-7fec577c5071.png)
 
+![image](https://user-images.githubusercontent.com/26733046/180589644-eb6577cc-e919-4791-8ea7-873708630b29.png)
+
+
+![image](https://user-images.githubusercontent.com/26733046/180589659-e40095bd-9ea3-4b93-8471-b32f5bc3fa48.png)
+
 
 ![image](https://user-images.githubusercontent.com/26733046/180588973-ba638594-f495-41cf-9a5e-3e9c4e0793df.png)
+
+![image](https://user-images.githubusercontent.com/26733046/180589709-666de6d3-f7ff-480d-bbf6-99e65d61a91f.png)
+
+![image](https://user-images.githubusercontent.com/26733046/180589727-8b8975d3-083e-4b71-9f2f-f5169ef03f03.png)
 
 
 ![image](https://user-images.githubusercontent.com/26733046/180588986-0e1a0f62-f496-44c5-9387-f1f6e3854b09.png)
