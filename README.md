@@ -1,8 +1,8 @@
 # mlfuncs
-Functions for machine learning classification on numerical tabular data.
-Uses scilit learn
+Functions for machine learning classification & regressionon on numerical tabular data.
+Uses scilit learn.
 
-example google colab notebook:
+Example google colab notebook:
 
 BINARY CLASSIFCATION:
 https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing
