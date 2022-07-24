@@ -2,7 +2,7 @@
 Functions for machine learning classification & regressionon on numerical tabular data.
 Uses scilit learn.
 
-Example google colab notebook:
+Example google colab notebooks:
 
 BINARY CLASSIFCATION:
 https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing
@@ -19,6 +19,7 @@ https://colab.research.google.com/drive/1R1-jiSRq-IRK3_Rr1XgFTnwygKBaVuB9?usp=sh
 
 
 ![image](https://user-images.githubusercontent.com/26733046/180589499-f4ada26d-9b8e-43a3-aabd-a73de7b53f2e.png)
+
 
 ![image](https://user-images.githubusercontent.com/26733046/180588849-7a78731e-88f7-43cd-afda-db7c339ea925.png)
 
