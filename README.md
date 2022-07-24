@@ -49,3 +49,17 @@ https://colab.research.google.com/drive/1R1-jiSRq-IRK3_Rr1XgFTnwygKBaVuB9?usp=sh
 
 
 ![image](https://user-images.githubusercontent.com/26733046/180589010-eb7bc599-7f33-47fd-8b12-90acd9695689.png)
+
+
+![image](https://user-images.githubusercontent.com/26733046/180630669-c5e4ff87-5c6d-46da-9bda-4f60ed107cae.png)
+
+
+![image](https://user-images.githubusercontent.com/26733046/180630745-3efc4d19-b4cd-4f76-a8de-acd7f06f2c33.png)
+
+
+![image](https://user-images.githubusercontent.com/26733046/180630757-6c4cc944-e01a-45ad-8a05-f49b758c4e8c.png)
+
+
+
+
+
