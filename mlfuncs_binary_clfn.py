@@ -229,12 +229,13 @@ def fn_plot_corr_numerical(f_ratios, df_corr, figsize = (15, 7), fontsize = 15):
 
 
 
-def fn_feat_select_numerical_clfn_data(df_tr, plot = True,
-                   thresh_feat_label = None, 
-                   thresh_feat_feat =  None,
-                   figsize = (15, 7)):
+def fn_feat_select_clfn_data(df_tr, n_feats = None, plot = True,
+                             thresh_feat_label = None, 
+                             thresh_feat_feat =  None,
+                             figsize = (15, 7)):
     
-    df_X, y = df_tr.iloc[:, :-1], df_tr.iloc[:, -1].values
+    n_feats = -1 if n_feats == None else n_feats
+    df_X, y = df_tr.iloc[:, :n_feats], df_tr.iloc[:, -1].values
     f_ratios = fn_feat_importance(df_X, y)
     df_corr = fn_corr_matrix(df_X, f_ratios)
 
