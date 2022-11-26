@@ -471,10 +471,10 @@ def fn_pr_rec_tr_eval_multi(y_tr, y_tr_pred, y_eval, y_eval_pred):
             preds_current_class = dff[dff.y == cls].y_pred 
             preds_other_classes = dff[dff.y != cls].y_pred 
         
-            TP = sum([1 for i in preds_current_class if i == cls]) + 1e-6
-            FP = sum([1 for i in preds_current_class if i != cls]) + 1e-6
-            FN = sum([1 for i in preds_other_classes  if i == cls]) + 1e-6
-            prec, rec = TP/(TP + FP), TP/(TP + FN)
+            TP = sum([1 for i in preds_current_class if i == cls]) 
+            FP = sum([1 for i in preds_current_class if i != cls]) 
+            FN = sum([1 for i in preds_other_classes  if i == cls]) 
+            prec, rec = TP/(TP + FP + 1e-6), TP/(TP + FN + 1e-6)
             collect_TPs.append(TP)
 
             d[cls]  = [prec, rec]
