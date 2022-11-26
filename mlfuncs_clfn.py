@@ -101,18 +101,23 @@ def fn_standardize_df(df_tr_, to_transform = []):
 ##################################################################
 # DIMENSIONALITY REDUCTION:
 
-def fn_PCA(df_Xy_, reduce_dims = 3, n_iter=7):   
-       
-    X, y = df_Xy_.iloc[:, :-1].values, df_Xy_.iloc[:, -1].values
-    pca_tranformer = TruncatedSVD(n_components = reduce_dims, n_iter=n_iter, random_state=42).fit(X)
-    dim_reduced_data = pca_tranformer.transform(X)    
-    
-    df_dim_reduced_data = pd.DataFrame(dim_reduced_data)
-    n_dims = df_dim_reduced_data.shape[1]
-    df_dim_reduced_data.columns = [f'f{i}' for i in range(n_dims)]
-    df_dim_reduced_data = df_dim_reduced_data.assign(labels = y.ravel())
-   
-    return df_dim_reduced_data, pca_tranformer
+def fn_pca_df(df_tr_, reduce_dims = 3, to_transform = [],  n_iter=7):   
+
+    def fn_X(df): return df.iloc[:, :-1].values     
+    def fn_y(df): return df.iloc[:, -1].values
+    def fn_df(X, y): 
+        cols = ['f' +str(i) for i in range(X.shape[1])]
+        return pd.DataFrame(X, columns = cols).assign(labels = y)
+
+
+    Xs = [fn_X(df) for df in [df_tr_, *to_transform]]
+    ys = [fn_y(df) for df in [df_tr_, *to_transform]]
+
+    pca_tranformer = TruncatedSVD(n_components = reduce_dims, n_iter=n_iter, random_state=42).fit(Xs[0])
+    transformed_Xs = [pca_tranformer.transform(X) for X in Xs]  
+
+    dfs = [fn_df(X, y) for X, y in zip(transformed_Xs, ys)]
+    return [*dfs, pca_tranformer]
 
 
     
@@ -229,12 +234,13 @@ def fn_plot_corr_numerical(f_ratios, df_corr, figsize = (15, 7), fontsize = 15):
 
 
 
-def fn_feat_select_numerical_clfn_data(df_tr, plot = True,
-                   thresh_feat_label = None, 
-                   thresh_feat_feat =  None,
-                   figsize = (15, 7)):
+def fn_feat_select_clfn(df_tr, n_feats = None, plot = True,
+                             thresh_feat_label = None, 
+                             thresh_feat_feat =  None,
+                             figsize = (15, 7)):
     
-    df_X, y = df_tr.iloc[:, :-1], df_tr.iloc[:, -1].values
+    n_feats = -1 if n_feats == None else n_feats
+    df_X, y = df_tr.iloc[:, :n_feats], df_tr.iloc[:, -1].values
     f_ratios = fn_feat_importance(df_X, y)
     df_corr = fn_corr_matrix(df_X, f_ratios)
 
@@ -447,4 +453,93 @@ def fn_test_model_binary_clf(df_Xy_, model_, threshold_class_1 = 0.5):
     return df.round(3)
 
 
+##############################################################################
+##############################################################################
 
+
+def fn_pr_rec_tr_eval_multi(y_tr, y_tr_pred, y_eval, y_eval_pred):
+
+    def fn_prec_rec_multicls(y, y_pred):    
+
+        dff = pd.DataFrame().assign(y = y, y_pred = y_pred)
+        classes = dff.y.unique()
+        d = {}
+        collect_TPs = []
+
+        for cls in classes:
+
+            preds_current_class = dff[dff.y == cls].y_pred 
+            preds_other_classes = dff[dff.y != cls].y_pred 
+        
+            TP = sum([1 for i in preds_current_class if i == cls]) + 1e-6
+            FP = sum([1 for i in preds_current_class if i != cls]) + 1e-6
+            FN = sum([1 for i in preds_other_classes  if i == cls]) + 1e-6
+            prec, rec = TP/(TP + FP), TP/(TP + FN)
+            collect_TPs.append(TP)
+
+            d[cls]  = [prec, rec]
+
+        dff = pd.DataFrame(d).T
+        dff.columns = 'prec rec'.split()
+        
+        acc = 100*np.array(collect_TPs).sum()/len(y)
+        return dff, acc.round(4)
+
+    dff_tr, tr_acc = fn_prec_rec_multicls(y_tr, y_tr_pred)
+    dff_eval, eval_acc = fn_prec_rec_multicls(y_eval, y_eval_pred)
+
+    dff = pd.concat([dff_tr, dff_eval], axis = 1)*100
+    dff.columns = 'tr_prec tr_rec eval_prec eval_rec'.split()
+
+    prec_diff = (dff.tr_prec - dff.eval_prec).round(4)
+    rec_diff = (dff.tr_rec - dff.eval_rec).round(4) 
+    dff = dff.assign(prec_diff = prec_diff, rec_diff = rec_diff)  
+    avg = pd.DataFrame(dff.mean(axis = 0), columns = ['avg']).T 
+    df_performance = pd.concat([dff, avg])
+    print(f'tr_acc = {tr_acc}, eval_acc = {eval_acc}')
+    return df_performance.style.background_gradient()
+
+
+
+
+def fn_pr_rec_tr_ts_multi(y_tr, y_tr_pred, y_ts, y_ts_pred):
+
+    def fn_prec_rec_multicls(y, y_pred):    
+
+        dff = pd.DataFrame().assign(y = y, y_pred = y_pred)
+        classes = dff.y.unique()
+        d = {}
+        collect_TPs = []
+
+        for cls in classes:
+
+            preds_current_class = dff[dff.y == cls].y_pred 
+            preds_other_classes = dff[dff.y != cls].y_pred 
+        
+            TP = sum([1 for i in preds_current_class if i == cls]) + 1e-6
+            FP = sum([1 for i in preds_current_class if i != cls]) + 1e-6
+            FN = sum([1 for i in preds_other_classes  if i == cls]) + 1e-6
+            prec, rec = TP/(TP + FP), TP/(TP + FN)
+            collect_TPs.append(TP)
+
+            d[cls]  = [prec, rec]
+
+        dff = pd.DataFrame(d).T
+        dff.columns = 'prec rec'.split()
+        
+        acc = 100*np.array(collect_TPs).sum()/len(y)
+        return dff, acc.round(4)
+
+    dff_tr, tr_acc = fn_prec_rec_multicls(y_tr, y_tr_pred)
+    dff_eval, eval_acc = fn_prec_rec_multicls(y_ts, y_ts_pred)
+
+    dff = pd.concat([dff_tr, dff_eval], axis = 1)*100
+    dff.columns = 'tr_prec tr_rec ts_prec ts_rec'.split()
+
+    prec_diff = (dff.tr_prec - dff.ts_prec).round(4)
+    rec_diff = (dff.tr_rec - dff.ts_rec).round(4) 
+    dff = dff.assign(prec_diff = prec_diff, rec_diff = rec_diff)  
+    avg = pd.DataFrame(dff.mean(axis = 0), columns = ['avg']).T 
+    df_performance = pd.concat([dff, avg])
+    print(f'tr_acc = {tr_acc}, ts_acc = {eval_acc}')
+    return df_performance.style.background_gradient()
