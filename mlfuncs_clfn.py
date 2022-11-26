@@ -336,15 +336,15 @@ def fn_acc_prec_rec(y, y_proba, thresh):
     y_pred = np.array([1 if i > thresh else 0 for i in y_proba])
     dff = pd.DataFrame().assign(y = y, y_pred = y_pred)
     
-    TP_1 = sum([1 for i in dff[dff.y == 1].y_pred if i == 1]) + 1e-6
-    FP_1 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) + 1e-6
-    FN_1 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) + 1e-6
-    prec_1, rec_1 = TP_1/(TP_1 + FP_1), TP_1/(TP_1 + FN_1)
+    TP_1 = sum([1 for i in dff[dff.y == 1].y_pred if i == 1]) 
+    FP_1 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) 
+    FN_1 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) 
+    prec_1, rec_1 = TP_1/(TP_1 + FP_1 + 1e-6), TP_1/(TP_1 + FN_1 + 1e-6)
 
-    TP_0 = sum([1 for i in dff[dff.y == 0].y_pred if i == 0]) + 1e-6
-    FP_0 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) + 1e-6
-    FN_0 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) + 1e-6
-    prec_0, rec_0 = TP_0/(TP_0 + FP_0), TP_0/(TP_0 + FN_0)
+    TP_0 = sum([1 for i in dff[dff.y == 0].y_pred if i == 0]) 
+    FP_0 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) 
+    FN_0 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) 
+    prec_0, rec_0 = TP_0/(TP_0 + FP_0 + 1e-6), TP_0/(TP_0 + FN_0 + 1e-6)
     
     acc = (TP_1 + TP_0)/len(y_pred)  
 
