@@ -331,24 +331,17 @@ def fn_pred_proba(model, X):
 
 
 
-def fn_acc_prec_rec(y, y_proba, thresh):    
+def fn_acc_prec_rec(y, y_proba, thresh):   
 
-    y_pred = np.array([1 if i > thresh else 0 for i in y_proba])
-    dff = pd.DataFrame().assign(y = y, y_pred = y_pred)
-    
-    TP_1 = sum([1 for i in dff[dff.y == 1].y_pred if i == 1]) 
-    FP_1 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) 
-    FN_1 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) 
-    prec_1, rec_1 = TP_1/(TP_1 + FP_1 + 1e-6), TP_1/(TP_1 + FN_1 + 1e-6)
+    above_thresh, below_thresh = (y_proba >= thresh), (y_proba < thresh)     
+    y_1, y_0 = (y == 1), (y == 0)
 
-    TP_0 = sum([1 for i in dff[dff.y == 0].y_pred if i == 0]) 
-    FP_0 = sum([1 for i in dff[dff.y == 1].y_pred if i != 1]) 
-    FN_0 = sum([1 for i in dff[dff.y == 0].y_pred if i != 0]) 
-    prec_0, rec_0 = TP_0/(TP_0 + FP_0 + 1e-6), TP_0/(TP_0 + FN_0 + 1e-6)
-    
-    acc = (TP_1 + TP_0)/len(y_pred)  
+    TP, TN = (above_thresh * y_1).sum(), (below_thresh * y_0).sum()
+    acc = (TP + TN)/len(y)
+    prec_1, rec_1 = TP/(above_thresh.sum() + 1e-6), TP/(y_1.sum() + 1e-6)
+    prec_0, rec_0 = TN/(below_thresh.sum() + 1e-6), TN/(y_0.sum() + 1e-6)
 
-    return acc, prec_0, prec_1, rec_0, rec_1
+    return np.array([acc, prec_0, prec_1, rec_0, rec_1]).round(4)
     
 
     
@@ -371,6 +364,9 @@ def fn_performance_metrics(y, y_proba, listO_thresholds):
 def fn_pr_rec_tr_eval(y_tr, y_tr_proba, y_eval, y_eval_proba, 
                     class_, listO_thresholds = np.linspace(0, 1, 10).round(2)):
 
+    
+    y_tr, y_tr_proba = np.array(y_tr), np.array(y_tr_proba)
+    y_eval, y_eval_proba = np.array(y_eval), np.array(y_eval_proba)
     df_metrics_tr = fn_performance_metrics(y_tr, y_tr_proba, listO_thresholds)
     df_metrics_eval = fn_performance_metrics(y_eval, y_eval_proba, listO_thresholds)
 
