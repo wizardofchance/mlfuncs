@@ -12,8 +12,8 @@ MULTICLASS CLASSIFICATION:
 https://colab.research.google.com/drive/18IZAXdZLXXUAK3vbg7F0pzoOYmVksGJK?usp=sharing
 
 
-REGRESSION:  
-https://colab.research.google.com/drive/1R1-jiSRq-IRK3_Rr1XgFTnwygKBaVuB9?usp=sharing
+ 
+[REGRESSION DEMO ](https://colab.research.google.com/drive/1otE-qPPWRYf2jZppQ6TzZ-0k91LaJPK3#scrollTo=U4rd2XA_K8Ey)
 
 
 ![image](https://user-images.githubusercontent.com/26733046/180853642-b0756419-6cc3-4000-935f-d5fb05fbc628.png)
