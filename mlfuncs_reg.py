@@ -13,10 +13,11 @@ from sklearn.decomposition import TruncatedSVD
 
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 from matplotlib import cm
 from seaborn import heatmap, distplot
 from seaborn import displot
-plt.style.use('seaborn-whitegrid')
+sns.set_style('whitegrid')
 
 
 
@@ -37,19 +38,19 @@ def fn_tr_ts_split_reg(df_Xy_, ts_size = 0.2, rand_state = 63):
     return train_idxs, test_idxs
     
 
-def fn_tr_eval_ts_split_reg(df_Xy_, eval_size = 0.2, ts_size = 0.2):
+def fn_tr_val_ts_split_reg(df_Xy_, val_size = 0.2, ts_size = 0.2):
 
-    idxs_tr, idxs_ts_ = fn_tr_ts_split_reg(df_Xy_, ts_size = ts_size + eval_size)
+    idxs_tr, idxs_ts_ = fn_tr_ts_split_reg(df_Xy_, ts_size = ts_size + val_size)
 
     df_tr = df_Xy_.iloc[idxs_tr]
     df_ts_ = df_Xy_.iloc[idxs_ts_]
 
-    idxs_eval, idxs_ts = fn_tr_ts_split_reg(df_ts_, ts_size = ts_size/(ts_size + eval_size))
+    idxs_val, idxs_ts = fn_tr_ts_split_reg(df_ts_, ts_size = ts_size/(ts_size + val_size))
 
-    df_eval = df_ts_.iloc[idxs_eval]
+    df_val = df_ts_.iloc[idxs_val]
     df_ts = df_ts_.iloc[idxs_ts]
 
-    return df_tr, df_eval, df_ts
+    return df_tr, df_val, df_ts
 
 
 def fn_standardize_df(df_tr_, to_transform = []):   
@@ -74,7 +75,22 @@ def fn_standardize_df(df_tr_, to_transform = []):
 
 #################################################################################
 #################################################################################
+def fn_hist_plot(rv, rv_name, fig_aspect = 0.4):
+    fig = plt.figure(figsize=plt.figaspect(fig_aspect))
 
+    ax1 = plt.subplot(121)
+    plt.hist(rv, alpha = 0.5) 
+    plt.xlabel(rv_name)
+    plt.title('PDF')
+
+    ax2 = plt.subplot(122)
+    sns.kdeplot(rv, fill=True, cumulative=True,ax=ax2)
+    plt.xlabel(rv_name)
+    plt.title('CDF')
+
+    plt.show()
+    
+    
 
 def fn_distr_labels_reg(y_):
     s = pd.DataFrame(pd.Series(y_), columns = ['values'])
@@ -263,30 +279,31 @@ def fn_reg_performance(y, y_pred):
 
 
 
-def fn_reg_metrics_tr_eval(y_tr, y_tr_pred, y_eval, y_eval_pred):
+def fn_reg_metrics_tr_val(y_tr, y_tr_pred, y_val, y_val_pred, tr_alpha = 0.2, val_alpha = 0.45, fig_aspect = 0.4):
 
     rmse, mae, mape, r2 = np.array(fn_reg_performance(y_tr, y_tr_pred)).round(3)
     absolute_error, percent_error = abs(y_tr - y_tr_pred), abs(y_tr - y_tr_pred)/abs(y_tr+1e-15)
 
-    rmse_2, mae_2, mape_2, r2_2 = np.array(fn_reg_performance(y_eval, y_eval_pred)).round(3)
-    absolute_error_2, percent_error_2 = abs(y_eval - y_eval_pred), abs(y_eval - y_eval_pred)/abs(y_eval+1e-15)
+    rmse_2, mae_2, mape_2, r2_2 = np.array(fn_reg_performance(y_val, y_val_pred)).round(3)
+    absolute_error_2, percent_error_2 = abs(y_val - y_val_pred), abs(y_val - y_val_pred)/abs(y_val+1e-15)
 
-    f, ax = plt.subplots(1, 2, sharey = True, figsize = (14, 4))
-    ax = ax.flatten()
+    fig = plt.figure(figsize=plt.figaspect(fig_aspect))
 
-    ax[0].hist(absolute_error, cumulative = True, density = True, alpha = 0.2, label = 'TRAIN')
-    ax[0].hist(absolute_error_2, cumulative = True, density = True, alpha = 0.4, label = 'EVAL')
-    ax[0].vlines(mae, 0, 1, label = 'MAE TR')
-    ax[0].vlines(mae_2, 0, 1, label = 'MAE EVAL', linestyle = '--')
-    ax[0].set_title('CDF ABSOLUTE ERROR')
-    ax[0].legend(loc='lower right', prop={'weight':'bold'})
+    ax1 = plt.subplot(121)
+    sns.kdeplot(absolute_error, fill=True, cumulative=True, alpha = tr_alpha, label = 'TRAIN', ax=ax1)
+    sns.kdeplot(absolute_error_2, fill=True, cumulative=True, alpha = val_alpha, label = 'VAL', ax=ax1)
+    plt.vlines(mae, 0, 1, label = 'MAE TR')
+    plt.vlines(mae_2, 0, 1, label = 'MAE VAL', linestyle = '--')
+    plt.title('CDF ABSOLUTE ERROR')
+    plt.legend(loc='lower right', prop={'weight':'bold'})
 
-    ax[1].hist(percent_error, cumulative = True, density = True, alpha = 0.2, label = 'TRAIN')
-    ax[1].hist(percent_error_2, cumulative = True, density = True, alpha = 0.4, label = 'EVAL')
-    ax[1].vlines(mape, 0, 1, label = 'MAPE TR')
-    ax[1].vlines(mape_2, 0, 1, label = 'MAPE EVAL', linestyle = '--')
-    ax[1].set_title('CDF PERCENTAGE ERROR')
-    ax[1].legend(loc='lower right', prop={'weight':'bold'})
+    ax2 = plt.subplot(122)
+    sns.kdeplot(percent_error, fill=True, cumulative=True, alpha = tr_alpha, label = 'TRAIN', ax=ax2)
+    sns.kdeplot(percent_error_2, fill=True, cumulative=True, alpha = val_alpha, label = 'VAL', ax=ax2)
+    plt.vlines(mape, 0, 1, label = 'MAPE TR')
+    plt.vlines(mape_2, 0, 1, label = 'MAPE VAL', linestyle = '--')
+    plt.title('CDF PERCENTAGE ERROR')
+    plt.legend(loc='lower right', prop={'weight':'bold'})
 
     plt.tight_layout()
     plt.show()
