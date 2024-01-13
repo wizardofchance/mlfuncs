@@ -4,12 +4,10 @@ Uses scikit learn.
 
 Example google colab notebooks:
 
-BINARY CLASSIFCATION:
-https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing
+[BINARY CLASSIFCATION](https://colab.research.google.com/drive/1vduaW0hPU32Oi0ig741KEMtIcr4OxpvJ?usp=sharing)
 
 
-MULTICLASS CLASSIFICATION:
-https://colab.research.google.com/drive/18IZAXdZLXXUAK3vbg7F0pzoOYmVksGJK?usp=sharing
+[MULTICLASS CLASSIFICATION DEMO](https://colab.research.google.com/drive/18IZAXdZLXXUAK3vbg7F0pzoOYmVksGJK?usp=sharing)
 
 
  
